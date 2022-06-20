@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %} {{ parent() }} | Test{% endblock %}
+
+{% block body %}
+
+    <h1>Test !</h1>
+
+    {# Ceci est un commentaire #}
+    {% set name = "Sylvain" %}
+    <h2>{{ name }}</h2>
+
+    {# création d'un tableau #}
+    {% set colors = ['blue', 'red', 'yellow', 'purple'] %}
+
+    {% for color in colors %}
+        <div style="background-color: {{ color }}">{{ color }}</div>
+
+        {# usage de loop, disponible uniquement au sein d'une boucle for #}
+        {% if loop.first %}
+            <div>Première itération</div>
+        {% endif %}
+
+        <div>Nombre d'éléments de mon tableau : {{ loop.length }}</div>
+        <div>Index de l'élément : {{ loop.index }}</div>
+
+        {% if loop.last %}
+            <div>Dernière itération</div>
+        {% endif %}
+    {% endfor %}
+
+
+    {# création d'un objet #}
+    {% set book =
+        {
+            'author' : 'Joh Doe',
+            'title' : 'Mon livre',
+            'year' : 2000
+        } %}
+
+    <p>Title : {{ book.title }}</p>
+
+    {% for key, val in book %}
+        <div>{{ key }} : {{ val }}</div>
+    {% endfor %}
+
+    {# Quelques filtres #}
+    <p>{{ name|upper }} : {{ name|length }} lettres</p>
+    <p>Tableaux couleurs : {{ colors|length }} couleurs</p>
+    <p>{{ colors|join("-") }}</p>
+    <p>{{ "now"|date("Y-m-d") }}</p>
+
+{% endblock %}
+
+
+
+
+
