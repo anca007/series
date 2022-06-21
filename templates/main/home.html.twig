@@ -3,4 +3,23 @@
 
 {% block body %}
     <h1>Welcome in Series !</h1>
+    <h2>Bonjour {{ user }}</h2>
+    {# désactiver la protection XSS #}
+    <p>{{ user|raw }}</p>
+
+    {# supprime complètement le code malveillant #}
+    <p>{{ user|striptags }}</p>
+
+    <div>
+        <p>Serie : {{ serie.title }}</p>
+        <p>Year : {{ serie.year }}</p>
+        <p>Seasons : {{ serie.nbSeasons }}</p>
+    </div>
+
+    <div>
+        {# permet de boucler sur le tableau en affichant les clés et les valeurs #}
+        {% for key, elem in serie %}
+            <p>{{ key }} : {{ elem }}</p>
+        {% endfor %}
+    </div>
 {% endblock %}
