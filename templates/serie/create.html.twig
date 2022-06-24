@@ -6,5 +6,13 @@
 
 {% block body %}
     <h2>Create a serie !</h2>
+
+    {# affichage du formulaire #}
+    {{ form_start(serieForm) }}
+    {{ form_widget(serieForm) }}
+
+    <button>Create serie</button>
+
+    {{ form_end(serieForm) }}
 {% endblock %}
 

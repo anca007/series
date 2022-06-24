@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\SerieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 class Serie
@@ -13,18 +14,30 @@ class Serie
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Assert\NotBlank(message: "Please provide a name for the serie !")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "2 characters minimum please !",
+        maxMessage: "255 characters max please ")]
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
+    #[Assert\Length(
+        max: 3000,
+        maxMessage: "3000 characters max please ")]
     #[ORM\Column(type: 'text', nullable: true)]
     private $overview;
 
+    #[Assert\Choice(choices: ["ended", "returning", 'canceled'])]
     #[ORM\Column(type: 'string', length: 50)]
     private $status;
 
+    #[Assert\Range(notInRangeMessage: "Vote out of bound !", min: 0, max: 10, )]
     #[ORM\Column(type: 'decimal', precision: 3, scale: 1)]
     private $vote;
 
+    #[Assert\Range(notInRangeMessage: "Popularity out of bound !", min: 0, max: 9999, )]
     #[ORM\Column(type: 'decimal', precision: 6, scale: 2)]
     private $popularity;
 
@@ -34,6 +47,7 @@ class Serie
     #[ORM\Column(type: 'date')]
     private $firstAirDate;
 
+    #[Assert\GreaterThan(propertyPath: "firstAirDate")]
     #[ORM\Column(type: 'date', nullable: true)]
     private $lastAirDate;
 

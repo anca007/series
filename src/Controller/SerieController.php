@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Serie;
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,28 +15,41 @@ use Symfony\Component\Routing\Annotation\Route;
 class SerieController extends AbstractController
 {
 
-    #[Route('/list', name: 'list')]
-    public function list(SerieRepository $serieRepository): Response
+    #[Route('/list/{page}', name: 'list')]
+    public function list(int $page = 1, SerieRepository $serieRepository): Response
     {
-        //TODO renvoyer la liste des séries
 
+        $nbMaxSeries = $serieRepository->count([]);
+        $maxPage = ceil($nbMaxSeries / 50);
+
+        if($page < 1 || $page > $maxPage){
+            throw $this->createNotFoundException("This page doesn't exist !");
+        }
+
+        //récupère toutes les series
         //$series = $serieRepository->findAll();
-        //$series = $serieRepository->findBestSeries();
-        $series = $serieRepository->findBy([], ['vote' => 'DESC'], 50);
+        //récupère les séries populaires
+        $series = $serieRepository->findBestSeries($page);
+
+        //récupère toutes les séries et les trie par popularité
+        //$series = $serieRepository->findBy([], ['popularity' => 'DESC']);
 
         dump($series);
 
         return $this->render('serie/list.html.twig', [
-            "series" => $series
+            "series" => $series,
+            "currentPage" => $page,
+            "maxPage" => $maxPage
         ]);
     }
 
     #[Route('/detail/{id}', name: 'detail', requirements: ["id" => "\d+"])]
     public function detail(int $id, SerieRepository $serieRepository): Response
     {
-        //TODO renvoyer le détail de la série choisie
+        //récupération de la série en bdd en focntion de l'id
         $serie = $serieRepository->find($id);
 
+        //si je ne récupère pas de série je lance une erreur 404
         if(!$serie){
             throw $this->createNotFoundException("Oops ! Serie doesn't exist !");
         }
@@ -46,39 +60,35 @@ class SerieController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(EntityManagerInterface $entityManager, SerieRepository $serieRepository): Response
+    public function create(Request $request, SerieRepository $serieRepository): Response
     {
         //TODO permettre la création d'une nouvelle série
-
         $serie = new Serie();
-
-        $serie->setBackdrop("backdrop")
-            ->setDateCreated(new \DateTime())
-            ->setFirstAirDate(new \DateTime())
-            ->setGenres("SF")
-            ->setLastAirDate(new \DateTime())
-            ->setName("Code Quantum")
-            ->setPopularity(250.15)
-            ->setVote(8.5)
-            ->setPoster("Poster")
-            ->setStatus("Canceled")
-            ->setTmdbId(123456);
-
-        $serieRepository->add($serie, true);
-
-//        dump($serie);
-//
-//        $entityManager->persist($serie);
-//        $entityManager->flush();
-//
-//        dump($serie);
-//
-//        $entityManager->remove($serie);
-//        $entityManager->flush();
-//
-//        dump($serie);
+        $serie->setName("Code Quantum");
+        $serieForm = $this->createForm(SerieType::class, $serie);
 
 
-        return $this->render('serie/create.html.twig');
+        //associe la requête au formulaire
+        $serieForm->handleRequest($request);
+
+        //teste la soumission du formulaire
+        if($serieForm->isSubmitted() && $serieForm->isValid()){
+
+            //ajout date de création sinon erreur à l'insertion
+            $serie->setDateCreated(new \DateTime());
+
+            //enregistrement de le série en BDD
+            $serieRepository->add($serie, true);
+
+            //feedback utilisateur
+            $this->addFlash("success", "Serie added !");
+
+            //redirection vers la page de détail de la série créée
+            return $this->redirectToRoute('serie_detail', ['id' => $serie->getId()]);
+        }
+
+        return $this->render('serie/create.html.twig', [
+            'serieForm' => $serieForm->createView()
+        ]);
     }
 }

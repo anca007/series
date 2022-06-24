@@ -39,7 +39,9 @@ class SerieRepository extends ServiceEntityRepository
         }
     }
 
-    public function findBestSeries(){
+    public function findBestSeries(int $page){
+
+        $limit = 50;
 
         //En DQL
 //        $entityManager = $this->getEntityManager();
@@ -50,20 +52,20 @@ class SerieRepository extends ServiceEntityRepository
 //
 //        $query = $entityManager->createQuery($dql);
 
+        //calcul de l'offset et de limit en fonction du numéro de page
+        $offset = ($page - 1) * $limit ;
 
         //En queryBuilder
         //select
         $qb = $this->createQueryBuilder('s');
-        //where
-        $qb->andWhere('s.vote > 8')
-            ->andWhere('s.popularity > 100')
-            //order by
-            ->addOrderBy('s.popularity', 'DESC');
+        //order by
+        $qb->addOrderBy('s.popularity', 'DESC');
 
         $query = $qb->getQuery();
 
         //pareil pour DQL et QB
-        $query->setMaxResults(50);
+        $query->setMaxResults($limit);
+        $query->setFirstResult($offset);
         return $query->getResult();
     }
 
