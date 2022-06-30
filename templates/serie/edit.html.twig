@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+
+    <h2>Edit a serie</h2>
+
+    {% embed 'view/form/serieForm.html.twig' %}
+        {% block  buttonLabel1 %} Edit a serie {% endblock %}
+        {% block  buttonLabel2 %} Edit a serie {% endblock %}
+    {% endembed %}
+{% endblock %}
+

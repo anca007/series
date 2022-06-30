@@ -6,6 +6,13 @@
 
 {% block body %}
     <h2>Serie's detail !</h2>
+
+    <div class="flex_div">
+        <a class="link_button" href="{{ path('serie_edit', {'id': serie.id}) }}">Edit</a>
+        <a class="link_button" href="{{ path('serie_delete', {'id': serie.id}) }}">Delete</a>
+        <a class="link_button" href="{{ path('season_new', {'id': serie.id}) }}">Add Season</a>
+    </div>
+
    <div class="serie-details">
        <div>
            <img src="{{ asset('img/posters/series/' ~ serie.poster) }}" alt="{{ serie.name }}">
@@ -19,6 +26,20 @@
            <div>{{ serie.overview|nl2br }}</div>
        </div>
    </div>
+
+    <section class="seasons">
+        <h3>Seasons</h3>
+        {% for season in serie.seasons %}
+            <article>
+                <img src="{{ asset('img/posters/seasons/' ~ season.poster) }}" alt="{{ serie.name }} season #{{ season.number }}">
+                <div>
+                    <h4>Season #{{ season.number }}</h4>
+                    <div>{{ season.firstAirDate| date("Y-m-d") }}</div>
+                    <div>{{ season.overview|nl2br }}</div>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
 {% endblock %}
 
 {% block extraStyles %}

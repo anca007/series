@@ -1,18 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
 
+{% block title %}
+    {{ parent() }} | Create a serie
 {% endblock %}
 
 {% block body %}
     <h2>Create a serie !</h2>
 
     {# affichage du formulaire #}
-    {{ form_start(serieForm) }}
-    {{ form_widget(serieForm) }}
-
-    <button>Create serie</button>
-
-    {{ form_end(serieForm) }}
+    {% embed 'view/form/serieForm.html.twig' %}
+        {% block  buttonLabel1 %} Create a serie {% endblock %}
+        {% block  buttonLabel2 %} Create a serie {% endblock %}
+    {% endembed %}
 {% endblock %}
 
