@@ -1,0 +1,28 @@
+{# mise en place du thme sur ce formulaire #}
+{% form_theme serieForm 'view/theme/formTheme.html.twig' %}
+<div class="flex_div">
+    <div class="form_bloc">
+        {{ form_start(serieForm) }}
+        {{ form_row(serieForm.name) }}
+        {{ form_row(serieForm.overview) }}
+        {{ form_row(serieForm.status) }}
+        {{ form_row(serieForm.vote) }}
+        {{ form_row(serieForm.popularity) }}
+    </div>
+
+    <div class="form_bloc">
+        {{ form_rest(serieForm) }}
+    </div>
+</div>
+<div class="flex_div flex_cybr_btn">
+    <button class="cybr-btn">
+        {% block buttonLabel1 %}{% endblock %}
+        <span class="cybr-btn__glitch">{% block buttonLabel2 %}{% endblock %}</span>
+    </button>
+    <button onclick="history.back()" class="cybr-btn">
+        Cancel
+        <span class="cybr-btn__glitch">Cancel</span>
+    </button>
+</div>
+
+{{ form_end(serieForm) }}

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -58,6 +59,8 @@ class SerieRepository extends ServiceEntityRepository
         //En queryBuilder
         //select
         $qb = $this->createQueryBuilder('s');
+        $qb->leftJoin('s.seasons', 'seasons');
+        $qb->addSelect('seasons');
         //order by
         $qb->addOrderBy('s.popularity', 'DESC');
 
@@ -66,7 +69,9 @@ class SerieRepository extends ServiceEntityRepository
         //pareil pour DQL et QB
         $query->setMaxResults($limit);
         $query->setFirstResult($offset);
-        return $query->getResult();
+
+        $paginator = new Paginator($query);
+        return $paginator;
     }
 
 //    /**

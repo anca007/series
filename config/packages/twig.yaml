@@ -1,5 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    #ajout du thème sur tous les formulaires du site
+    #form_themes: ['view/theme/formTheme.html.twig']
 
 when@test:
     twig:
