@@ -36,8 +36,6 @@ class SerieController extends AbstractController
         //récupère toutes les séries et les trie par popularité
         //$series = $serieRepository->findBy([], ['popularity' => 'DESC']);
 
-        dump($series);
-
         return $this->render('serie/list.html.twig', [
             "series" => $series,
             "currentPage" => $page,
@@ -50,8 +48,6 @@ class SerieController extends AbstractController
     {
         //récupération de la série en bdd en focntion de l'id
         $serie = $serieRepository->find($id);
-
-        dump($serie);
 
         //si je ne récupère pas de série je lance une erreur 404
         if (!$serie) {
@@ -142,8 +138,6 @@ class SerieController extends AbstractController
     {
         //récupération de la série en bdd en fonction de l'id
         $serie = $serieRepository->find($id);
-
-        dump($serie);
 
         //si je ne récupère pas de série je lance une erreur 404
         if (!$serie) {

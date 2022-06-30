@@ -44,7 +44,7 @@ class SeasonController extends AbstractController
 
         if($seasonForm->isSubmitted() && $seasonForm->isValid()){
 
-            dump($season);
+
             $season->setDateCreated(new \DateTime());
             $seasonRepository->add($season, true);
 
