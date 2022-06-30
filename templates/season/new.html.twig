@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Create a season
+{% endblock %}
+
+{% block body %}
+    {{ form_start(seasonForm) }}
+    {{ form_widget(seasonForm) }}
+    <button>Create a Season</button>
+    <div class="flex_div flex_cybr_btn">
+        <button class="cybr-btn">
+            Create a Season
+            <span class="cybr-btn__glitch">Create a Season</span>
+        </button>
+        <button onclick="history.back()" class="cybr-btn">
+            Cancel
+            <span class="cybr-btn__glitch">Cancel</span>
+        </button>
+    </div>
+    {{ form_end(seasonForm) }}
+{% endblock %}
