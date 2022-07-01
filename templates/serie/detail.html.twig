@@ -11,27 +11,33 @@
         <a class="link_button" href="{{ path('serie_edit', {'id': serie.id}) }}">Edit</a>
         <a class="link_button" href="{{ path('serie_delete', {'id': serie.id}) }}">Delete</a>
         <a class="link_button" href="{{ path('season_new', {'id': serie.id}) }}">Add Season</a>
+        <div>
+            <button class="like_button" value="1">Like</button>
+            <button class="like_button" value="0">Dislike</button>
+        </div>
+        <div><span id="nbLike">{{ serie.nbLikes }}</span> likes</div>
     </div>
 
-   <div class="serie-details">
-       <div>
-           <img src="{{ asset('img/posters/series/' ~ serie.poster) }}" alt="{{ serie.name }}">
-       </div>
-       <div class="serie-details-infos">
+    <div class="serie-details">
+        <div>
+            <img src="{{ asset('img/posters/series/' ~ serie.poster) }}" alt="{{ serie.name }}">
+        </div>
+        <div class="serie-details-infos">
             <h2>{{ serie.name }}</h2>
-           <div>User ratings : {{ serie.vote }}</div>
-           <div>Categorized in : {{ serie.genres }}</div>
-           <div>Serie status : {{ serie.status }}</div>
-           <div>Aired from : {{ serie.firstAirDate|date('Y-m-d') }}</div>
-           <div>{{ serie.overview|nl2br }}</div>
-       </div>
-   </div>
+            <div>User ratings : {{ serie.vote }}</div>
+            <div>Categorized in : {{ serie.genres }}</div>
+            <div>Serie status : {{ serie.status }}</div>
+            <div>Aired from : {{ serie.firstAirDate|date('Y-m-d') }}</div>
+            <div>{{ serie.overview|nl2br }}</div>
+        </div>
+    </div>
 
     <section class="seasons">
         <h3>Seasons</h3>
         {% for season in serie.seasons %}
             <article>
-                <img src="{{ asset('img/posters/seasons/' ~ season.poster) }}" alt="{{ serie.name }} season #{{ season.number }}">
+                <img src="{{ asset('img/posters/seasons/' ~ season.poster) }}"
+                     alt="{{ serie.name }} season #{{ season.number }}">
                 <div>
                     <h4>Season #{{ season.number }}</h4>
                     <div>{{ season.firstAirDate| date("Y-m-d") }}</div>
@@ -44,13 +50,51 @@
 
 {% block extraStyles %}
     <style>
-        body{
-            background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0,0,0,0.6)),
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6)),
             url("{{ asset('img/backdrops/' ~ serie.backdrop) }}");
         }
     </style>
 
 {% endblock %}
+
+
+{% block extraJs %}
+    <script>
+        //récupération des boutons
+        let buttons = Array.from(document.getElementsByClassName("like_button"));
+        console.log(buttons);
+
+        //boucle sur les boutons
+        buttons.forEach(function (elem, idx) {
+
+            //ajout d'un évènement de type click
+            elem.addEventListener("click", function () {
+
+                //préparation des données à envoyer
+                let data = {serieId: {{ serie.id }}, like: elem.value}
+                console.log(data);
+                //utilisation de fetch pour lancer une requête asynchrone
+                fetch("{{ path('api_serie_update_like') }}", {method: 'POST', body: JSON.stringify(data)})
+                    .then(function (response) {
+                        return response.json();
+                    }).then(function (data) {
+                       document.getElementById("nbLike").innerText = data.nbLike
+                })
+
+            })
+
+        })
+
+    </script>
+{% endblock %}
+
+
+
+
+
+
+
 
 
 

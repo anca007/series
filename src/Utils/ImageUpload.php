@@ -2,10 +2,12 @@
 
 namespace App\Utils;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 class ImageUpload
 {
 
-    public function save($image, $name, $dir){
+    public function save(UploadedFile $image, string $name, string $dir){
 
         if ($image) {
 

@@ -6,6 +6,7 @@ use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @extends ServiceEntityRepository<Serie>
@@ -14,12 +15,17 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Serie|null findOneBy(array $criteria, array $orderBy = null)
  * @method Serie[]    findAll()
  * @method Serie[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Serie[] findByTitle($title)
  */
 class SerieRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private Security $security;
+
+    public function __construct(ManagerRegistry $registry, Security $security)
     {
         parent::__construct($registry, Serie::class);
+        $this->security = $security;
     }
 
     public function add(Serie $entity, bool $flush = false): void
@@ -40,7 +46,10 @@ class SerieRepository extends ServiceEntityRepository
         }
     }
 
-    public function findBestSeries(int $page){
+    public function findBestSeries(int $page)
+    {
+
+       // $this->security->getUser();
 
         $limit = 50;
 
@@ -54,7 +63,7 @@ class SerieRepository extends ServiceEntityRepository
 //        $query = $entityManager->createQuery($dql);
 
         //calcul de l'offset et de limit en fonction du numéro de page
-        $offset = ($page - 1) * $limit ;
+        $offset = ($page - 1) * $limit;
 
         //En queryBuilder
         //select
@@ -63,6 +72,7 @@ class SerieRepository extends ServiceEntityRepository
         $qb->addSelect('seasons');
         //order by
         $qb->addOrderBy('s.popularity', 'DESC');
+        //$qb->andWhere("s.vote > :vote")->setParameter("vote", $vote);
 
         $query = $qb->getQuery();
 
