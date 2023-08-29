@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Test
+{% endblock %}
+
+{% block body %}
+    <h1>Accueil Demo Twig</h1>
+
+    {# ceci est un commentaire #}
+    {# sur plusieurs lignes #}
+
+    {# initialise une variable et lui affecte une valeur en twig #}
+    {% set city="Rennes" %}
+
+    {# Affiche la variable city en twig #}
+    <p>{{ city|upper }}</p>
+
+    {# Teste la valeur de la variable #}
+    {% if city =="rennes" %}
+        <p>Condition ok</p>
+    {% else %}
+        <p>Condition KO ce n'est pas Rennes</p>
+    {% endif %}
+
+    {% set vegetables=["carotte","tomate","patate"] %}
+    <h1>{{ vegetables[2] }}</h1>
+    <hr>
+    {% for vegetable in vegetables %}
+        <p>{{ vegetable }}</p>
+    {% else %}
+        <p>Pas de légumes ici.</p>
+    {% endfor %}
+
+    <hr>
+    {% set vegetables2=[] %}
+    {% for vegetable in vegetables2 %}
+        <p>{{ vegetable }}</p>
+    {% else %}
+        <p>Pas de légumes ici.</p>
+    {% endfor %}
+
+
+    <hr>
+    {# Exemple sur les objets #}
+    {% set user={
+        'name':'toto',
+        'age':66,
+        'isactive':true
+    } %}
+    <h2>{{ user.name|upper }}</h2>
+    <dl>
+        {% for key,val in user %}
+            <dt>{{ key }}</dt>
+            <dd>{{ val }}</dd>
+        {% endfor %}
+    </dl>
+
+    {# Crée un tableau #}
+    {% set colors=["orange","brown","yellow"] %}
+    {% for color in colors %}
+        <div style="background-color: {{ color }}">{{ color }}</div>
+    {% endfor %}
+
+
+    <br>
+
+    {# quelques filtres #}
+    <div>{{ city|upper }}</div>
+    <div>{{ colors | join('-') }} / {{ colors | length }}</div>
+    <div>{{ "now" | date("Y-m-d") }}</div>
+
+{% endblock %}

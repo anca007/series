@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Series !{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="icon" href="{{ asset('img/icon.png') }}">
+
+</head>
+<body>
+<div class="container">
+    <header>
+        <a href="{{ path('main_home') }}">
+            <img src="{{ asset("img/logo.svg") }}" alt="Series !">
+        </a>
+        {% include 'menu/nav.html.twig' %}
+    </header>
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer>
+        {% include 'menu/nav.html.twig' %}
+    </footer>
+</div>
+</body>
+</html>
