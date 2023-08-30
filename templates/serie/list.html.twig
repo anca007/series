@@ -2,6 +2,15 @@
 
 {% block body %}
     <h2>List of series !</h2>
+
+    <div>
+        {% for serie in series %}
+            <p>{{ serie.name }}</p>
+        {% endfor %}
+    </div>
+
+
+
 {% endblock %}
 
 {% block title %}
