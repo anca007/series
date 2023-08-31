@@ -17,8 +17,9 @@ class SerieController extends AbstractController
     {
         //récupération de toutes les séries
         //$series = $serieRepository->findAll();
+        //$series = $serieRepository->findBy([], ["popularity" => "DESC"], 50);
 
-        $series = $serieRepository->findBy([], ["popularity" => "DESC"], 50);
+        $series = $serieRepository->findBestSeries(200);
         dump($series);
 
         return $this->render('serie/list.html.twig', [
