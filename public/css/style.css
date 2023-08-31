@@ -157,3 +157,18 @@ textarea{
 .seasons{
     margin-top: 15px;
 }
+
+/************************** Form Thème *****************************************/
+
+.form-error{
+    color: red;
+    border: 1px red;
+}
+
+.form-widget{
+    min-width: 300px;
+}
+
+.form-label{
+    color: cornflowerblue;
+}

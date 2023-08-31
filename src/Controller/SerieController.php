@@ -3,15 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Serie;
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/serie', name: 'serie_')]
 class SerieController extends AbstractController
 {
+
     #[Route('', name: 'list')]
     public function list(SerieRepository $serieRepository): Response
     {
@@ -35,7 +38,7 @@ class SerieController extends AbstractController
         $serie = $serieRepository->find($id);
 
         //si la série n'est pas trouvé je renvoie une 404
-        if(!$serie){
+        if (!$serie) {
             throw $this->createNotFoundException("Oops ! Serie not found !");
         }
 
@@ -45,43 +48,30 @@ class SerieController extends AbstractController
     }
 
     #[Route('/new', name: 'new')]
-    public function new(EntityManagerInterface $entityManager): Response
+    public function new(
+        EntityManagerInterface $entityManager,
+        Request                $request): Response
     {
-
         $serie = new Serie();
-        $serie
-            ->setBackdrop("backdrop")
-            ->setDateCreated(new \DateTime())
-            ->setGenres("SF")
-            ->setName("X-Files")
-            ->setFirstAirDate(new \DateTime("-10 year"))
-            ->setPopularity(500)
-            ->setPoster('poster.png')
-            ->setStatus('ending')
-            ->setTmdbId(1234)
-            ->setVote(8);
+        $serieForm = $this->createForm(SerieType::class, $serie);
 
-        dump($serie);
+        //extrait les données de la requête
+        $serieForm->handleRequest($request);
 
-        $entityManager->persist($serie);
-        $entityManager->flush();
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
 
-        //update du nom de la série
-        $serie->setName("Code Quantum");
-        dump($serie);
-        //ça lance un update et non une nouvelle insertion
-        $entityManager->persist($serie);
-        $entityManager->flush();
+            $entityManager->persist($serie);
+            $entityManager->flush();
 
-        dump($serie);
+            $this->addFlash("success", "Serie " . $serie->getName() . " added  ! ");
 
-        $entityManager->remove($serie);
-        $entityManager->flush();
-
-        dump($serie);
+            return $this->redirectToRoute("serie_show", ['id' => $serie->getId()]);
+        }
 
         //TODO renvoyer un formulaire d'ajout de série
-        return $this->render('serie/new.html.twig');
+        return $this->render('serie/new.html.twig', [
+            "serieForm" => $serieForm->createView()
+        ]);
     }
 
 }
