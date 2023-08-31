@@ -20,6 +20,9 @@
         <img src="{{ asset("img/posters/series/" ~ serie.poster) }}" alt="{{ serie.name }}">
 
         <div class="serie-detail-infos">
+            <div class="flex_div">
+                <a class="link_button" href="{{ path('serie_edit', {'id': serie.id}) }}">Edit</a>
+            </div>
             <h3>{{ serie.name }}</h3>
             <div>User ratings : {{ serie.vote }}</div>
             <div>Genres : {{ serie.genres }}</div>

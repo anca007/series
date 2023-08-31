@@ -30,7 +30,7 @@ a {
 
 .link_button{
     border: 2px solid blueviolet;
-    margin: 5px;
+    margin-bottom: 5px;
     padding: 5px;
     border-radius: 30% 5%;
 }
