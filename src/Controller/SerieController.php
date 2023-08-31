@@ -74,4 +74,33 @@ class SerieController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
+    public function edit(
+        int $id,
+        EntityManagerInterface $entityManager,
+        SerieRepository $serieRepository,
+        Request                $request): Response
+    {
+        $serie = $serieRepository->find($id);
+        $serieForm = $this->createForm(SerieType::class, $serie);
+
+        //extrait les données de la requête
+        $serieForm->handleRequest($request);
+
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
+
+            $entityManager->persist($serie);
+            $entityManager->flush();
+
+            $this->addFlash("success", "Serie " . $serie->getName() . " updated  ! ");
+
+            return $this->redirectToRoute("serie_show", ['id' => $serie->getId()]);
+        }
+
+        //TODO renvoyer un formulaire d'ajout de série
+        return $this->render('serie/new.html.twig', [
+            "serieForm" => $serieForm->createView()
+        ]);
+    }
+
 }
