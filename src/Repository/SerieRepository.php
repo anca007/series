@@ -22,7 +22,8 @@ class SerieRepository extends ServiceEntityRepository
     }
 
 
-    public function findBestSeries(int $popularity){
+    public function findBestSeries(int $popularity)
+    {
 
         //EN DQL
         $dql = "SELECT s FROM App\Entity\Serie AS s
@@ -46,6 +47,21 @@ class SerieRepository extends ServiceEntityRepository
 
         $query->setMaxResults(50);
         return $query->getResult();
+    }
+
+    public function findSeriesWithPagination(int $page)
+    {
+        $limit = 50;
+
+        $qb = $this->createQueryBuilder("s");
+        $qb->addOrderBy("s.popularity", "DESC");
+        $qb->setMaxResults($limit);
+
+        $offset = $limit * ($page - 1);
+        $qb->setFirstResult($offset);
+
+        return $qb->getQuery()->getResult();
+
     }
 
 

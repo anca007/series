@@ -16,18 +16,41 @@ use Symfony\Component\Routing\Annotation\Route;
 class SerieController extends AbstractController
 {
 
-    #[Route('', name: 'list')]
-    public function list(SerieRepository $serieRepository): Response
+    #[Route('/list/{page}', name: 'list')]
+    public function list(SerieRepository $serieRepository, int $page = 1): Response
     {
         //récupération de toutes les séries
         //$series = $serieRepository->findAll();
         //$series = $serieRepository->findBy([], ["popularity" => "DESC"], 50);
 
-        $series = $serieRepository->findBestSeries(200);
-        dump($series);
+        if($page < 1){
+            $page = 1;
+        }
+
+        $totalSeries = $serieRepository->count([]);
+        $maxPage = ceil($totalSeries / 50);
+
+        if($page > $maxPage){
+            $page = $maxPage;
+        }
+
+
+
+        //$series = $serieRepository->findBestSeries(200);
+        if($page <= $maxPage){
+            $series = $serieRepository->findSeriesWithPagination($page);
+        }else{
+            throw $this->createNotFoundException("Page not found !");
+        }
+
+
+
+
 
         return $this->render('serie/list.html.twig', [
-            "series" => $series
+            "series" => $series,
+            "currentPage" => $page,
+            "maxPage" => $maxPage
         ]);
     }
 
