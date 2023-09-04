@@ -4,11 +4,12 @@
 
     <h2>List of series !</h2>
     <section>
-        <div class="flex_between">
+        <div class=" flex_div flex_between">
             {% if currentPage > 1 %}
                 <a class="link_button" href="{{ path('serie_list', {'page': currentPage - 1}) }}">Previous page</a>
             {% endif %}
             {% if currentPage < maxPage %}
+                <div></div>
                 <a class="link_button" href="{{ path('serie_list', {'page': currentPage + 1}) }}">Next page</a>
             {% endif %}
         </div>

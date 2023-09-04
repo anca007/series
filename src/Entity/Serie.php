@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SerieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,6 +61,14 @@ class Serie
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
+
+    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class)]
+    private Collection $seasons;
+
+    public function __construct()
+    {
+        $this->seasons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -224,5 +234,35 @@ class Serie
     #[ORM\PrePersist]
     public function setDateAtValue(){
         $this->setDateCreated(new \DateTime());
+    }
+
+    /**
+     * @return Collection<int, Season>
+     */
+    public function getSeasons(): Collection
+    {
+        return $this->seasons;
+    }
+
+    public function addSeason(Season $season): static
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons->add($season);
+            $season->setSerie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeason(Season $season): static
+    {
+        if ($this->seasons->removeElement($season)) {
+            // set the owning side to null (unless already changed)
+            if ($season->getSerie() === $this) {
+                $season->setSerie(null);
+            }
+        }
+
+        return $this;
     }
 }
