@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
@@ -16,18 +17,22 @@ class Serie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["serie_api"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Please provide a name for the serie !")]
     #[Assert\Length(max: 255, maxMessage: "Max {{ limit }} characters")]
+    #[Groups(["serie_api"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["serie_api"])]
     private ?string $overview = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices : ["canceled", "returning", "ended"])]
+    #[Groups(["serie_api"])]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 1)]
@@ -42,6 +47,7 @@ class Serie
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\LessThan(propertyPath: "lastAirDate")]
+    #[Groups(["serie_api"])]
     private ?\DateTimeInterface $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -63,6 +69,7 @@ class Serie
     private ?\DateTimeInterface $dateModified = null;
 
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, cascade: ['remove'])]
+    #[Groups(["serie_api"])]
     private Collection $seasons;
 
     public function __construct()
