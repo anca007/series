@@ -2,8 +2,8 @@
 
 {% block extraStyles %}
     <style>
-        body{
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.9)),
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)),
             url("{{ asset("img/backdrops/" ~ serie.backdrop) }}");
         }
     </style>
@@ -22,6 +22,8 @@
         <div class="serie-detail-infos">
             <div class="flex_div">
                 <a class="link_button" href="{{ path('serie_edit', {'id': serie.id}) }}">Edit</a>
+                <a onclick="return confirm('Are you sure to delete this serie ({{ serie.name}}) ? ')" class="link_button" href="{{ path('serie_delete', {'id': serie.id}) }}">Delete</a>
+                <a  class="link_button" href="{{ path('season_new', {'serieId': serie.id}) }}">Add a season</a>
             </div>
             <h3>{{ serie.name }}</h3>
             <div>User ratings : {{ serie.vote }}</div>
@@ -29,9 +31,27 @@
             <div>Status : {{ serie.status }}</div>
             <div>Aired from {{ serie.firstAirDate | date('Y-m-d') }} to {{ serie.lastAirDate | date('Y-m-d') }}</div>
             <p>{{ serie.overview | nl2br }}</p>
-
         </div>
-
     </div>
+    <div class="seasons">
+        <h3>Seasons</h3>
+
+        {% for season in serie.seasons %}
+            <article>
+                <img src="{{ asset("img/posters/seasons/" ~ season.poster) }}"
+                     alt="{{ serie.name }} | {{ season.number }}">
+                <div>
+                    <h4>Season #{{ season.number }}</h4>
+                    <p>First air date : {{ season.firstAirDate | date('Y-m-d') }}</p>
+                    <p>{{ season.overview }}</p>
+                </div>
+
+            </article>
+        {% else %}
+            <div>No seasons !</div>
+        {% endfor %}
+    </div>
+
+
 {% endblock %}
 

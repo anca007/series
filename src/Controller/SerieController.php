@@ -34,18 +34,12 @@ class SerieController extends AbstractController
             $page = $maxPage;
         }
 
-
-
         //$series = $serieRepository->findBestSeries(200);
         if($page <= $maxPage){
             $series = $serieRepository->findSeriesWithPagination($page);
         }else{
             throw $this->createNotFoundException("Page not found !");
         }
-
-
-
-
 
         return $this->render('serie/list.html.twig', [
             "series" => $series,
@@ -57,15 +51,13 @@ class SerieController extends AbstractController
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     public function show(int $id, SerieRepository $serieRepository): Response
     {
-        dump($id);
-
         $serie = $serieRepository->find($id);
 
         //si la série n'est pas trouvé je renvoie une 404
         if (!$serie) {
             throw $this->createNotFoundException("Oops ! Serie not found !");
         }
-
+        dump($serie);
         return $this->render('serie/show.html.twig', [
             "serie" => $serie
         ]);
@@ -137,6 +129,21 @@ class SerieController extends AbstractController
         return $this->render('serie/new.html.twig', [
             "serieForm" => $serieForm->createView()
         ]);
+    }
+
+    #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'])]
+    public function delete(
+        int $id,
+        EntityManagerInterface $entityManager,
+        SerieRepository $serieRepository){
+
+        $serie = $serieRepository->find($id);
+
+        $entityManager->remove($serie);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Serie ' . $serie->getName() . ' deleted !');
+        return $this->redirectToRoute("serie_list");
     }
 
 }
