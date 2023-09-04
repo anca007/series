@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -56,11 +57,17 @@ class SerieRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder("s");
         $qb->addOrderBy("s.popularity", "DESC");
         $qb->setMaxResults($limit);
+        $qb->leftJoin("s.seasons", "seasons");
+        $qb->addSelect("seasons");
 
         $offset = $limit * ($page - 1);
         $qb->setFirstResult($offset);
 
-        return $qb->getQuery()->getResult();
+        $query = $qb->getQuery();
+        //gère le soucis de l'offset/limit quand jointure
+        $paginator =  new Paginator($query);
+
+        return $paginator;
 
     }
 
