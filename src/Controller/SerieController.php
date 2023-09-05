@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/serie', name: 'serie_')]
 class SerieController extends AbstractController
@@ -64,6 +65,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/new', name: 'new')]
+//    #[IsGranted("ROLE_USER")]
     public function new(
         EntityManagerInterface $entityManager,
         Request                $request): Response
