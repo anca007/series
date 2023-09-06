@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
+use App\Utils\Uploader;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,21 +26,21 @@ class SerieController extends AbstractController
         //$series = $serieRepository->findAll();
         //$series = $serieRepository->findBy([], ["popularity" => "DESC"], 50);
 
-        if($page < 1){
+        if ($page < 1) {
             $page = 1;
         }
 
         $totalSeries = $serieRepository->count([]);
         $maxPage = ceil($totalSeries / 50);
 
-        if($page > $maxPage){
+        if ($page > $maxPage) {
             $page = $maxPage;
         }
 
         //$series = $serieRepository->findBestSeries(200);
-        if($page <= $maxPage){
+        if ($page <= $maxPage) {
             $series = $serieRepository->findSeriesWithPagination($page);
-        }else{
+        } else {
             throw $this->createNotFoundException("Page not found !");
         }
 
@@ -68,7 +70,9 @@ class SerieController extends AbstractController
 //    #[IsGranted("ROLE_USER")]
     public function new(
         EntityManagerInterface $entityManager,
-        Request                $request): Response
+        Request                $request,
+        Uploader               $uploader
+    ): Response
     {
         $serie = new Serie();
         $serieForm = $this->createForm(SerieType::class, $serie);
@@ -78,17 +82,14 @@ class SerieController extends AbstractController
 
         if ($serieForm->isSubmitted() && $serieForm->isValid()) {
 
-            /**
-             * @var UploadedFile $image
-             */
-            $image = $serieForm->get('poster')->getData();
-
-            if($image){
-                $newFileName = $serie->getName() . "-" . uniqid() . "." .$image->guessExtension() ;
-                $image->move($this->getParameter("upload_serie_dir"), $newFileName);
-
-                $serie->setPoster($newFileName);
-            }
+            $serie->setPoster(
+                $uploader->upload($serieForm->get('poster')->getData(),
+                    $this->getParameter('upload_poster_serie_dir'),
+                    $serie->getName()));
+            $serie->setBackdrop(
+                $uploader->upload($serieForm->get('backdrop')->getData(),
+                    $this->getParameter('upload_backdrop_serie_dir'),
+                    $serie->getName()));
 
             $entityManager->persist($serie);
             $entityManager->flush();
@@ -106,9 +107,9 @@ class SerieController extends AbstractController
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
     public function edit(
-        int $id,
+        int                    $id,
         EntityManagerInterface $entityManager,
-        SerieRepository $serieRepository,
+        SerieRepository        $serieRepository,
         Request                $request): Response
     {
         $serie = $serieRepository->find($id);
@@ -134,12 +135,14 @@ class SerieController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'])]
+    #[IsGranted("SERIE_DELETE", "serie", "You can't delete this serie")]
     public function delete(
-        int $id,
+        Serie                  $serie,
         EntityManagerInterface $entityManager,
-        SerieRepository $serieRepository){
+        SerieRepository        $serieRepository)
+    {
 
-        $serie = $serieRepository->find($id);
+        //$serie = $serieRepository->find($id);
 
         $entityManager->remove($serie);
         $entityManager->flush();

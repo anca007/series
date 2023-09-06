@@ -52,7 +52,16 @@ class SerieType extends AbstractType
                 'widget' => 'single_text'
             ])
             ->add('lastAirDate')
-            ->add('backdrop')
+            ->add('backdrop', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new Image([
+                        'maxSize' => '2m',
+                        'mimeTypesMessage' => 'Please mets une image !'
+                    ])
+                ]
+            ])
             ->add('poster', FileType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -63,8 +72,7 @@ class SerieType extends AbstractType
                     ])
                 ]
             ])
-            ->add('tmdbId')
-        ;
+            ->add('tmdbId');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
