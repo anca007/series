@@ -13,6 +13,31 @@
     Detail
 {% endblock %}
 
+{% block extraJs %}
+    <script>
+
+        let buttons = document.querySelectorAll(".like-button")
+        buttons.forEach(function (button) {
+
+            let data  = {"data" : button.value }
+
+            button.addEventListener("click", function (){
+                fetch("{{ path('api_serie_update', {'id' : serie.id }) }}", {method : "PUT", body : JSON.stringify(data)})
+                    .then(function(response){
+                        if(response.ok){
+                            return response.json()
+                        }
+                    })
+                    .then(function(data){
+                        document.getElementById("nb-like").innerText = data.like
+                    })
+
+            })
+        })
+
+    </script>
+{% endblock %}
+
 {% block body %}
     <h2>Detail of the serie : {{ serie.name }}</h2>
 
@@ -28,7 +53,12 @@
                 {% endif %}
                 <a class="link_button" href="{{ path('season_new', {'serieId': serie.id}) }}">Add a season</a>
             </div>
-            <h3>{{ serie.name }}</h3>
+            <h3>{{ serie.name }} | <span id="nb-like">{{ serie.nbLike }}</span> like(s)
+                <div class="flex_div">
+                    <button class="like-button" value="1">Like</button>
+                    <button class="like-button" value="-1">Dislike</button>
+                </div>
+            </h3>
             <div>User ratings : {{ serie.vote }}</div>
             <div>Genres : {{ serie.genres }}</div>
             <div>Status : {{ serie.status }}</div>

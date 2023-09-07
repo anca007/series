@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Serie;
 use App\Repository\SerieRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,8 +36,22 @@ class SerieController extends AbstractController
     }
 
     #[Route('/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['PUT', 'PATCH'])]
-    public function update(): Response
+    public function update(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SerieRepository $serieRepository): Response
     {
+        $data = $request->getContent();
+        $data = json_decode($data);
+
+        $serie = $serieRepository->find($id);
+        $serie->setNbLike($serie->getNbLike() + $data->data );
+
+        $entityManager->persist($serie);
+        $entityManager->flush();
+
+        return $this->json(['like' => $serie->getNbLike()]);
 
     }
     #[Route('/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
