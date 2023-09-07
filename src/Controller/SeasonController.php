@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Season;
 use App\Form\SeasonType;
 use App\Repository\SerieRepository;
+use App\Utils\Censurator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ class SeasonController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
         SerieRepository $serieRepository,
+        Censurator $censurator,
         int $serieId = 0): Response
     {
         $season = new Season();

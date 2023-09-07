@@ -6,7 +6,6 @@
 parameters:
     upload_poster_serie_dir: 'img/posters/series'
     upload_backdrop_serie_dir: 'img/backdrops'
-    app.censurator_file:
 
 services:
     # default configuration for services in *this* file
