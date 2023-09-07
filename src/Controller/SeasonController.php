@@ -19,7 +19,6 @@ class SeasonController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
         SerieRepository $serieRepository,
-        Censurator $censurator,
         int $serieId = 0): Response
     {
         $season = new Season();

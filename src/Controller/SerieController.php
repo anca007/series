@@ -60,7 +60,7 @@ class SerieController extends AbstractController
         if (!$serie) {
             throw $this->createNotFoundException("Oops ! Serie not found !");
         }
-        dump($serie);
+
         return $this->render('serie/show.html.twig', [
             "serie" => $serie
         ]);
